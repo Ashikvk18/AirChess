@@ -16,60 +16,60 @@ class UITheme:
         self.current_theme = theme
         self.themes = {
             Theme.CLASSIC_WOOD: {
-                'board_colors': [(222, 202, 163), (139, 108, 66)],
-                'border_color': (92, 64, 31),
-                'highlight_color': (255, 223, 0),
-                'selected_color': (0, 128, 255),
-                'legal_color': (0, 255, 0),
-                'illegal_color': (255, 0, 0),
-                'hover_color': (255, 255, 0),
-                'check_color': (255, 0, 0),
-                'background': (45, 45, 48),
-                'panel_bg': (60, 60, 63),
-                'text_color': (255, 255, 255),
-                'accent_color': (0, 122, 255)
-            },
-            Theme.MARBLE: {
-                'board_colors': [(245, 245, 245), (52, 52, 52)],
-                'border_color': (180, 180, 180),
-                'highlight_color': (100, 200, 255),
-                'selected_color': (0, 150, 255),
-                'legal_color': (0, 255, 150),
-                'illegal_color': (255, 100, 100),
-                'hover_color': (150, 200, 255),
-                'check_color': (255, 50, 50),
-                'background': (30, 30, 35),
+                'board_colors': [(240, 217, 181), (181, 136, 99)],
+                'border_color': (139, 90, 43),
+                'highlight_color': (255, 235, 100),
+                'selected_color': (100, 149, 237),
+                'legal_color': (50, 205, 50),
+                'illegal_color': (220, 20, 60),
+                'hover_color': (255, 215, 0),
+                'check_color': (255, 69, 0),
+                'background': (25, 25, 30),
                 'panel_bg': (40, 40, 45),
                 'text_color': (255, 255, 255),
-                'accent_color': (100, 200, 255)
+                'accent_color': (100, 149, 237)
+            },
+            Theme.MARBLE: {
+                'board_colors': [(248, 248, 255), (47, 79, 79)],
+                'border_color': (105, 105, 105),
+                'highlight_color': (135, 206, 250),
+                'selected_color': (70, 130, 180),
+                'legal_color': (144, 238, 144),
+                'illegal_color': (255, 99, 71),
+                'hover_color': (173, 216, 230),
+                'check_color': (255, 99, 71),
+                'background': (20, 20, 25),
+                'panel_bg': (35, 35, 40),
+                'text_color': (255, 255, 255),
+                'accent_color': (135, 206, 250)
             },
             Theme.MODERN: {
-                'board_colors': [(255, 248, 220), (70, 130, 180)],
-                'border_color': (50, 100, 150),
-                'highlight_color': (255, 200, 0),
-                'selected_color': (255, 100, 0),
-                'legal_color': (0, 255, 100),
-                'illegal_color': (255, 50, 50),
-                'hover_color': (255, 180, 0),
-                'check_color': (255, 0, 100),
-                'background': (20, 25, 40),
-                'panel_bg': (30, 35, 50),
+                'board_colors': [(255, 250, 240), (25, 25, 112)],
+                'border_color': (70, 130, 180),
+                'highlight_color': (255, 223, 0),
+                'selected_color': (255, 140, 0),
+                'legal_color': (0, 255, 127),
+                'illegal_color': (255, 69, 0),
+                'hover_color': (255, 255, 224),
+                'check_color': (255, 20, 147),
+                'background': (15, 15, 20),
+                'panel_bg': (25, 25, 35),
                 'text_color': (255, 255, 255),
-                'accent_color': (0, 200, 255)
+                'accent_color': (0, 191, 255)
             },
             Theme.DARK: {
-                'board_colors': [(80, 80, 80), (20, 20, 20)],
-                'border_color': (60, 60, 60),
-                'highlight_color': (150, 150, 255),
-                'selected_color': (100, 100, 255),
-                'legal_color': (100, 255, 100),
-                'illegal_color': (255, 100, 100),
-                'hover_color': (200, 200, 150),
-                'check_color': (255, 100, 100),
+                'board_colors': [(105, 105, 105), (25, 25, 25)],
+                'border_color': (64, 64, 64),
+                'highlight_color': (147, 112, 219),
+                'selected_color': (138, 43, 226),
+                'legal_color': (124, 252, 0),
+                'illegal_color': (255, 64, 64),
+                'hover_color': (189, 183, 107),
+                'check_color': (255, 105, 180),
                 'background': (10, 10, 15),
                 'panel_bg': (20, 20, 25),
                 'text_color': (255, 255, 255),
-                'accent_color': (150, 150, 255)
+                'accent_color': (147, 112, 219)
             }
         }
     
@@ -129,36 +129,84 @@ class UITheme:
         cv2.circle(img, (x + w - radius, y + h - radius), radius, color, thickness)
     
     def draw_panel(self, img, x, y, w, h, title="", content=""):
-        """Draw a modern UI panel with shadow and rounded corners."""
+        """Draw a modern UI panel with enhanced visual design."""
         colors = self.get_colors()
         
-        # Draw shadow
-        img = self.draw_shadow(img, x, y, w, h)
+        # Draw enhanced shadow with blur effect
+        shadow_img = img.copy()
+        shadow_offset = 12
+        shadow_alpha = 0.4
         
-        # Draw panel background
-        self.draw_rounded_rectangle(img, x, y, w, h, 10, colors['panel_bg'], -1)
+        # Create shadow with gradient
+        for i in range(8):
+            alpha = shadow_alpha * (1 - i/8)
+            shadow_color = (0, 0, 0)
+            offset = shadow_offset - i
+            cv2.rectangle(shadow_img, (x + offset, y + offset), 
+                         (x + w + offset, y + h + offset), shadow_color, -1)
         
-        # Draw border
-        self.draw_gradient_border(img, x, y, w, h, 2, colors['accent_color'])
+        # Blend shadow back
+        img = cv2.addWeighted(img, 1.0, shadow_img, 0.3, 0)
         
-        # Draw title
+        # Draw main panel background with gradient
+        panel_bg = colors['panel_bg']
+        cv2.rectangle(img, (x, y), (x + w, y + h), panel_bg, -1)
+        
+        # Add gradient overlay for depth
+        gradient = img.copy()
+        for i in range(min(h//4, 20)):
+            alpha = 1.0 - (i / (h//4))
+            gradient_color = tuple(int(c * alpha) for c in colors['accent_color'])
+            cv2.line(gradient, (x, y + i), (x + w, y + i), gradient_color, 1)
+        
+        img = cv2.addWeighted(img, 0.85, gradient, 0.15, 0)
+        
+        # Draw modern border with rounded corners effect
+        border_color = colors['accent_color']
+        cv2.rectangle(img, (x, y), (x + w, y + h), border_color, 2)
+        
+        # Draw inner highlight
+        inner_highlight = tuple(min(255, c + 30) for c in colors['accent_color'])
+        cv2.rectangle(img, (x + 2, y + 2), (x + w - 2, y + h - 2), inner_highlight, 1)
+        
+        # Draw title with enhanced styling
         if title:
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 0.6
+            font_scale = 0.7
             thickness = 2
             text_size = cv2.getTextSize(title, font, font_scale, thickness)[0]
             text_x = x + (w - text_size[0]) // 2
-            text_y = y + 25
-            cv2.putText(img, title, (text_x, text_y), font, font_scale, colors['text_color'], thickness, cv2.LINE_AA)
+            text_y = y + 30
+            
+            # Draw text shadow
+            cv2.putText(img, title, (text_x + 1, text_y + 1), font, font_scale, 
+                       (0, 0, 0), thickness + 1, cv2.LINE_AA)
+            
+            # Draw main text
+            cv2.putText(img, title, (text_x, text_y), font, font_scale, 
+                       colors['text_color'], thickness, cv2.LINE_AA)
+            
+            # Draw title underline
+            underline_y = text_y + 8
+            cv2.line(img, (text_x - 5, underline_y), 
+                    (text_x + text_size[0] + 5, underline_y), 
+                    colors['accent_color'], 2)
         
-        # Draw content
+        # Draw content with better formatting
         if content:
             font = cv2.FONT_HERSHEY_SIMPLEX
             font_scale = 0.5
             thickness = 1
             lines = content.split('\n')
             for i, line in enumerate(lines):
-                text_y = y + 50 + (i * 20)
-                cv2.putText(img, line, (x + 10, text_y), font, font_scale, colors['text_color'], thickness, cv2.LINE_AA)
+                text_y = y + 55 + (i * 22)
+                
+                # Draw text shadow for better readability
+                cv2.putText(img, line, (x + 15, text_y + 1), font, font_scale, 
+                           (0, 0, 0), thickness + 1, cv2.LINE_AA)
+                
+                # Draw main text
+                cv2.putText(img, line, (x + 15, text_y), font, font_scale, 
+                           colors['text_color'], thickness, cv2.LINE_AA)
         
         return img

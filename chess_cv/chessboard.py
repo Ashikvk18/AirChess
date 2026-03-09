@@ -9,13 +9,16 @@ import os
 from .theme import UITheme, Theme
 
 class ChessboardUI:
-    def __init__(self, board_size=360, margin=20):
+    def __init__(self, board_size=480, margin=40):
         self.board_size = board_size
         self.margin = margin
         self.square_size = (board_size - 2 * margin) // 8
         self.theme = UITheme()
         # Load piece images
         self.piece_images = self.load_piece_images()
+        # Board positioning (centered on screen)
+        self.board_x = 240  # Center position on 960px width
+        self.board_y = 120  # Upper position for better visibility
 
     def set_theme(self, theme_name):
         """Set the visual theme."""
@@ -65,50 +68,64 @@ class ChessboardUI:
     def get_square_center(self, square):
         file = chess.square_file(square)
         rank = chess.square_rank(square)
-        x = self.margin + file * self.square_size + self.square_size // 2
-        y = self.margin + (7 - rank) * self.square_size + self.square_size // 2
+        x = self.board_x + self.margin + file * self.square_size + self.square_size // 2
+        y = self.board_y + self.margin + (7 - rank) * self.square_size + self.square_size // 2
         return (x, y)
 
     def draw(self, img, board, hover_square=None, selected_square=None, legal_moves=None):
         colors = self.theme.get_colors()
+        
+        # Draw board shadow for depth
+        shadow_offset = 8
+        board_rect = (
+            self.board_x + self.margin - shadow_offset,
+            self.board_y + self.margin - shadow_offset,
+            self.board_x + self.margin + self.square_size * 8 + shadow_offset,
+            self.board_y + self.margin + self.square_size * 8 + shadow_offset
+        )
+        cv2.rectangle(img, (board_rect[0], board_rect[1]), (board_rect[2], board_rect[3]), (0, 0, 0), -1)
+        cv2.GaussianBlur(img[self.board_y + self.margin - shadow_offset:self.board_y + self.margin + self.square_size * 8 + shadow_offset,
+                           self.board_x + self.margin - shadow_offset:self.board_x + self.margin + self.square_size * 8 + shadow_offset], 
+                        (15, 15), 0, dst=img[self.board_y + self.margin - shadow_offset:self.board_y + self.margin + self.square_size * 8 + shadow_offset,
+                           self.board_x + self.margin - shadow_offset:self.board_x + self.margin + self.square_size * 8 + shadow_offset])
         
         # Draw board with modern styling
         for rank in range(8):
             for file in range(8):
                 square = chess.square(file, 7 - rank)
                 color = colors['board_colors'][(file + rank) % 2]
-                x0 = self.margin + file * self.square_size
-                y0 = self.margin + rank * self.square_size
+                x0 = self.board_x + self.margin + file * self.square_size
+                y0 = self.board_y + self.margin + rank * self.square_size
                 x1 = x0 + self.square_size
                 y1 = y0 + self.square_size
                 
-                # Draw square with subtle gradient effect
+                # Draw square with gradient effect
                 cv2.rectangle(img, (x0, y0), (x1, y1), color, -1)
                 
                 # Add subtle inner border for depth
-                inner_color = tuple(int(c * 0.9) for c in color)
+                inner_color = tuple(int(c * 0.95) for c in color)
                 cv2.rectangle(img, (x0+1, y0+1), (x1-1, y1-1), inner_color, 1)
                 
                 # Highlight legal moves with modern styling
                 if legal_moves and square in legal_moves:
                     self.theme.draw_rounded_rectangle(
-                        img, x0+2, y0+2, self.square_size-4, self.square_size-4, 
-                        5, colors['legal_color'], 3
+                        img, x0+3, y0+3, self.square_size-6, self.square_size-6, 
+                        8, colors['legal_color'], 3
                     )
                 
                 # Highlight hover with glow effect
                 if hover_square == square:
                     # Draw glow effect
-                    for i in range(3):
-                        glow_alpha = 0.3 - i * 0.1
+                    for i in range(4):
+                        glow_alpha = 0.4 - i * 0.1
                         glow_color = tuple(int(c * glow_alpha) for c in colors['hover_color'])
-                        cv2.rectangle(img, (x0-i, y0-i), (x1+i, y1+i), glow_color, 1)
+                        cv2.rectangle(img, (x0-i, y0-i), (x1+i, y1+i), glow_color, 2)
                 
                 # Highlight selected with gradient border
                 if selected_square == square:
                     self.theme.draw_gradient_border(
                         img, x0, y0, self.square_size, self.square_size, 
-                        4, colors['selected_color']
+                        5, colors['selected_color']
                     )
         
         # Draw pieces with shadow effects

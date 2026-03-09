@@ -88,6 +88,7 @@ from .animations import AnimationSystem
 from .alerts import GameAlertSystem
 from .captured import CapturedPiecesDisplay
 from .theme import Theme
+from .effects import VisualEffects
 
 def main():
     # Initialize modules
@@ -108,6 +109,7 @@ def main():
     animation_system = AnimationSystem(chessboard_ui)
     alert_system = GameAlertSystem()
     captured_display = CapturedPiecesDisplay(chessboard_ui=chessboard_ui)
+    visual_effects = VisualEffects()
     
     # Track if a move was made this frame
     move_made = False
@@ -145,10 +147,10 @@ def main():
             pinch_now = pinch_dist < PINCH_THRESHOLD
 
             # Map normalized coords to board pixel area
-            board_left = chessboard_ui.margin / w
-            board_top = chessboard_ui.margin / h
-            board_right = (chessboard_ui.margin + chessboard_ui.square_size * 8) / w
-            board_bottom = (chessboard_ui.margin + chessboard_ui.square_size * 8) / h
+            board_left = (chessboard_ui.board_x + chessboard_ui.margin) / w
+            board_top = (chessboard_ui.board_y + chessboard_ui.margin) / h
+            board_right = (chessboard_ui.board_x + chessboard_ui.margin + chessboard_ui.square_size * 8) / w
+            board_bottom = (chessboard_ui.board_y + chessboard_ui.margin + chessboard_ui.square_size * 8) / h
             # Only allow selection if finger is inside board area
             if board_left <= ix <= board_right and board_top <= iy <= board_bottom:
                 board_ix = (ix - board_left) / (board_right - board_left)
@@ -190,6 +192,11 @@ def main():
             if dragging_piece is not None and drag_pixel_pos is not None:
                 # Map drag_pixel_pos to board area
                 px, py = drag_pixel_pos
+                board_left = (chessboard_ui.board_x + chessboard_ui.margin) / w
+                board_top = (chessboard_ui.board_y + chessboard_ui.margin) / h
+                board_right = (chessboard_ui.board_x + chessboard_ui.margin + chessboard_ui.square_size * 8) / w
+                board_bottom = (chessboard_ui.board_y + chessboard_ui.margin + chessboard_ui.square_size * 8) / h
+                
                 if board_left <= px <= board_right and board_top <= py <= board_bottom:
                     board_px = (px - board_left) / (board_right - board_left)
                     board_py = (py - board_top) / (board_bottom - board_top)
@@ -226,10 +233,10 @@ def main():
         # 1. Start with camera frame
         frame = camera_frame.copy()
 
-        # 2. Update animations
-        animation_system.update()
+        # 2. Update visual effects
+        visual_effects.update()
 
-        # 3. Draw board squares
+        # 3. Draw board with enhanced shadow and positioning
         chessboard_ui.draw(frame, board)
 
         # 4. Draw all pieces except selected_square when dragging
@@ -293,18 +300,24 @@ def main():
         # Draw particle effects
         frame = animation_system.draw_particle_effects(frame)
 
-        # Check for game states and add alerts
+        # Check for game states and add alerts with enhanced effects
         if board.is_check():
             king_square = board.king(board.turn)
             alert_system.add_check_alert(king_square)
+            visual_effects.add_screen_shake(intensity=3, duration=0.2)
         elif board.is_checkmate():
             winner = chess.BLACK if board.turn == chess.WHITE else chess.WHITE
             alert_system.add_checkmate_alert(winner)
+            visual_effects.add_screen_shake(intensity=8, duration=0.5)
+            visual_effects.add_fade_effect(target_alpha=0.3, duration=2.0)
         elif board.is_stalemate():
             alert_system.add_stalemate_alert()
 
         # Draw alerts
         frame = alert_system.draw(frame, board)
+
+        # Apply all visual effects
+        frame = visual_effects.apply_all_effects(frame)
 
         # Draw HUD elements
         frame = hud.draw_turn_indicator(frame, board, human_turn)

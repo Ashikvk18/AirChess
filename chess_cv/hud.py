@@ -15,66 +15,85 @@ class HUDOverlay:
         self.small_font = cv2.FONT_HERSHEY_SIMPLEX
         
     def draw_turn_indicator(self, img, board, human_turn=True):
-        """Draw turn indicator with modern styling."""
+        """Draw enhanced turn indicator with modern styling."""
         colors = self.theme.get_colors()
         
-        # Panel dimensions
-        panel_w, panel_h = 200, 60
-        panel_x = self.width - panel_w - 20
-        panel_y = 20
+        # Panel dimensions - larger and more prominent
+        panel_w, panel_h = 220, 70
+        panel_x = self.width - panel_w - 30
+        panel_y = 30
         
-        # Draw panel
+        # Draw enhanced panel
         img = self.theme.draw_panel(img, panel_x, panel_y, panel_w, panel_h)
         
-        # Turn text
-        turn_text = "YOUR TURN" if human_turn else "COMPUTER"
+        # Turn text with emoji
+        turn_text = "👤 YOUR TURN" if human_turn else "🤖 COMPUTER'S"
         turn_color = colors['legal_color'] if human_turn else colors['illegal_color']
         
-        text_size = cv2.getTextSize(turn_text, self.font, 0.7, 2)[0]
+        text_size = cv2.getTextSize(turn_text, self.font, 0.6, 2)[0]
         text_x = panel_x + (panel_w - text_size[0]) // 2
-        text_y = panel_y + 35
+        text_y = panel_y + 40
         
-        cv2.putText(img, turn_text, (text_x, text_y), self.font, 0.7, turn_color, 2, cv2.LINE_AA)
+        # Draw text with shadow
+        cv2.putText(img, turn_text, (text_x + 1, text_y + 1), self.font, 0.6, 
+                   (0, 0, 0), 3, cv2.LINE_AA)
+        
+        # Draw main text
+        cv2.putText(img, turn_text, (text_x, text_y), self.font, 0.6, turn_color, 2, cv2.LINE_AA)
+        
+        # Add status indicator
+        indicator_color = colors['legal_color'] if human_turn else colors['illegal_color']
+        cv2.circle(img, (panel_x + 20, panel_y + panel_h // 2), 8, indicator_color, -1)
+        cv2.circle(img, (panel_x + 20, panel_y + panel_h // 2), 10, indicator_color, 2)
         
         return img
     
     def draw_game_status(self, img, board):
-        """Draw game status (check, checkmate, stalemate)."""
+        """Draw enhanced game status with better visual design."""
         colors = self.theme.get_colors()
         
         status_text = ""
         status_color = colors['text_color']
+        status_icon = ""
         
         if board.is_checkmate():
             if board.turn == chess.WHITE:
-                status_text = "BLACK WINS!"
+                status_text = "♟️ BLACK WINS!"
+                status_color = colors['check_color']
+                status_icon = "🏆"
             else:
-                status_text = "WHITE WINS!"
-            status_color = colors['check_color']
+                status_text = "♙ WHITE WINS!"
+                status_color = colors['check_color']
+                status_icon = "🏆"
         elif board.is_stalemate():
-            status_text = "STALEMATE"
+            status_text = "🤝 STALEMATE"
             status_color = colors['hover_color']
+            status_icon = "📋"
         elif board.is_check():
-            status_text = "CHECK!"
+            status_text = "⚠️ CHECK!"
             status_color = colors['check_color']
+            status_icon = "⚡"
         elif board.is_insufficient_material():
-            status_text = "DRAW (INSUFFICIENT)"
+            status_text = "📊 DRAW (INSUFFICIENT)"
             status_color = colors['hover_color']
+            status_icon = "⚖️"
         
         if status_text:
-            # Draw status panel
-            panel_w, panel_h = 250, 50
+            # Draw status panel with enhanced design
+            panel_w, panel_h = 300, 60
             panel_x = (self.width - panel_w) // 2
-            panel_y = 20
+            panel_y = 30
             
-            img = self.theme.draw_panel(img, panel_x, panel_y, panel_w, panel_h, "GAME STATUS", status_text)
+            img = self.theme.draw_panel(img, panel_x, panel_y, panel_w, panel_h, status_icon, status_text)
             
-            # Pulsing effect for check/checkmate
-            if "CHECK" in status_text:
+            # Add pulsing effect for important alerts
+            if "CHECK" in status_text or "WINS" in status_text:
                 import time
-                pulse = abs(np.sin(time.time() * 3))
-                border_color = tuple(int(c * pulse) for c in status_color)
-                cv2.rectangle(img, (panel_x, panel_y), (panel_x + panel_w, panel_y + panel_h), border_color, 3)
+                pulse = abs(np.sin(time.time() * 4))
+                border_width = int(3 + pulse * 2)
+                border_color = tuple(int(c * (0.7 + pulse * 0.3)) for c in status_color)
+                cv2.rectangle(img, (panel_x, panel_y), (panel_x + panel_w, panel_y + panel_h), 
+                             border_color, border_width)
         
         return img
     
