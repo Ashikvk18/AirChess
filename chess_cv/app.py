@@ -81,6 +81,13 @@ from .hand_tracker import HandTracker
 from .chessboard import ChessboardUI
 from .gesture import GestureController
 from .engine import ChessEngine
+from .hud import HUDOverlay
+from .settings import SettingsPanel
+from .gesture_guide import GestureGuide
+from .animations import AnimationSystem
+from .alerts import GameAlertSystem
+from .captured import CapturedPiecesDisplay
+from .theme import Theme
 
 def main():
     # Initialize modules
@@ -90,11 +97,20 @@ def main():
         sys.exit(1)
 
     hand_tracker = HandTracker()
-    # Track if a move was made this frame
-    move_made = False
     chessboard_ui = ChessboardUI()
     gesture_ctrl = GestureController()
     engine = ChessEngine()
+    
+    # Initialize UI components
+    hud = HUDOverlay()
+    settings_panel = SettingsPanel()
+    gesture_guide = GestureGuide()
+    animation_system = AnimationSystem(chessboard_ui)
+    alert_system = GameAlertSystem()
+    captured_display = CapturedPiecesDisplay(chessboard_ui=chessboard_ui)
+    
+    # Track if a move was made this frame
+    move_made = False
 
     board = chess.Board()
     selected_square = None
@@ -107,6 +123,7 @@ def main():
     running = True
     fps_time = cv2.getTickCount()
     frame_count = 0
+    move_history = []
 
     cv2.namedWindow("Hand Gesture Chess")
     while running:
@@ -183,10 +200,21 @@ def main():
                     move = chess.Move(selected_square, target_square)
                     if move in board.legal_moves:
                         board.push(move)
+                        move_history.append(move)
+                        
+                        # Add move animation
+                        animation_system.add_move_animation(move, dragging_piece)
+                        
+                        # Update captured pieces
+                        captured_display.update_captured_pieces(board)
+                        
                         human_turn = False
                         # Computer move (ONE only)
                         computer_move(board)
                         human_turn = True
+                    else:
+                        # Add invalid move effect
+                        animation_system.add_invalid_move_effect(target_square)
                 # If illegal, just snap back (do nothing)
             # Reset state after release
             selected_square = None
@@ -198,10 +226,13 @@ def main():
         # 1. Start with camera frame
         frame = camera_frame.copy()
 
-        # 2. Draw board squares
+        # 2. Update animations
+        animation_system.update()
+
+        # 3. Draw board squares
         chessboard_ui.draw(frame, board)
 
-        # 3. Draw all pieces except selected_square when dragging
+        # 4. Draw all pieces except selected_square when dragging
         for square in chess.SQUARES:
             piece = board.piece_at(square)
             if piece is not None:
@@ -229,13 +260,13 @@ def main():
         if hover_square is not None and not is_pinching:
             highlight_square(frame, hover_square, chessboard_ui)
 
-        # 4. If dragging, draw dragged piece at drag_pixel_pos LAST
+        # 5. If dragging, draw dragged piece at drag_pixel_pos LAST
         if dragging_piece is not None and drag_pixel_pos is not None and is_pinching:
             # Convert drag_pixel_pos (normalized) to pixel coordinates for drawing
             px = int(drag_pixel_pos[0] * w)
             py = int(drag_pixel_pos[1] * h)
             draw_piece_at(frame, get_piece_image(dragging_piece, chessboard_ui), px, py, chessboard_ui)
-            # 5. Draw debug red circle at drag_pixel_pos
+            # 6. Draw debug red circle at drag_pixel_pos
             cv2.circle(frame, (px, py), 18, (0,0,255), 3)
 
             # TARGET SQUARE PREVIEW
@@ -256,6 +287,45 @@ def main():
         if selected_square is not None:
             highlight_square(frame, selected_square, chessboard_ui)
 
+        # Draw animating pieces
+        frame = animation_system.draw_animating_pieces(frame)
+
+        # Draw particle effects
+        frame = animation_system.draw_particle_effects(frame)
+
+        # Check for game states and add alerts
+        if board.is_check():
+            king_square = board.king(board.turn)
+            alert_system.add_check_alert(king_square)
+        elif board.is_checkmate():
+            winner = chess.BLACK if board.turn == chess.WHITE else chess.WHITE
+            alert_system.add_checkmate_alert(winner)
+        elif board.is_stalemate():
+            alert_system.add_stalemate_alert()
+
+        # Draw alerts
+        frame = alert_system.draw(frame, board)
+
+        # Draw HUD elements
+        frame = hud.draw_turn_indicator(frame, board, human_turn)
+        frame = hud.draw_game_status(frame, board)
+        frame = hud.draw_move_history(frame, move_history)
+        frame = hud.draw_controls_help(frame)
+        frame = hud.draw_fps_counter(frame, 1000 / ((cv2.getTickCount() - fps_time) * 1000 / cv2.getTickFrequency()))
+        frame = hud.draw_theme_indicator(frame, chessboard_ui.theme.current_theme.value)
+        frame = hud.draw_settings_hint(frame)
+
+        # Draw captured pieces
+        frame = captured_display.draw(frame)
+
+        # Draw settings panel if visible
+        if settings_panel.visible:
+            frame = settings_panel.draw(frame)
+
+        # Draw gesture guide if visible
+        if gesture_guide.visible:
+            frame = gesture_guide.draw(frame)
+
         # Update pinch state
         is_pinching = pinch_now
 
@@ -264,6 +334,34 @@ def main():
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
             running = False
+        elif key == ord('t'):  # Toggle settings panel
+            settings_panel.toggle_visibility()
+        elif key == ord('g'):  # Toggle gesture guide
+            gesture_guide.toggle_visibility()
+        elif key == 13:  # Enter key - select settings option
+            if settings_panel.visible:
+                result = settings_panel.select_option()
+                if result in [Theme.CLASSIC_WOOD, Theme.MARBLE, Theme.MODERN, Theme.DARK]:
+                    chessboard_ui.set_theme(result)
+                    hud.theme.set_theme(result)
+                    settings_panel.theme.set_theme(result)
+                    gesture_guide.theme.set_theme(result)
+                    alert_system.theme.set_theme(result)
+                    captured_display.theme.set_theme(result)
+                elif result == "toggle_animations":
+                    animation_system.toggle_animations()
+                elif result == "reset_game":
+                    board = chess.Board()
+                    move_history.clear()
+                    captured_display.update_captured_pieces(board)
+        elif key == 82:  # Up arrow
+            if settings_panel.visible:
+                settings_panel.move_selection("up")
+        elif key == 84:  # Down arrow
+            if settings_panel.visible:
+                settings_panel.move_selection("down")
+        
+        fps_time = cv2.getTickCount()
 
     cap.release()
     cv2.destroyAllWindows()

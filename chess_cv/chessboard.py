@@ -1,23 +1,25 @@
 """
-Chessboard UI rendering and coordinate mapping.
+Chessboard UI rendering and coordinate mapping with modern themes.
 """
 
 import numpy as np
 import cv2
 import chess
 import os
+from .theme import UITheme, Theme
 
 class ChessboardUI:
     def __init__(self, board_size=360, margin=20):
         self.board_size = board_size
         self.margin = margin
         self.square_size = (board_size - 2 * margin) // 8
-        self.colors = [(222, 202, 163), (139, 108, 66)]  # light, dark (wood style)
-        self.highlight_color = (0, 255, 255)
-        self.selected_color = (0, 128, 255)
-        self.legal_color = (0, 255, 0)
+        self.theme = UITheme()
         # Load piece images
         self.piece_images = self.load_piece_images()
+
+    def set_theme(self, theme_name):
+        """Set the visual theme."""
+        self.theme.set_theme(theme_name)
 
     def load_piece_images(self):
         # Map (piece_type, color) to PNG path in assets/wood/
@@ -68,26 +70,48 @@ class ChessboardUI:
         return (x, y)
 
     def draw(self, img, board, hover_square=None, selected_square=None, legal_moves=None):
-        # Draw squares
+        colors = self.theme.get_colors()
+        
+        # Draw board with modern styling
         for rank in range(8):
             for file in range(8):
                 square = chess.square(file, 7 - rank)
-                color = self.colors[(file + rank) % 2]
+                color = colors['board_colors'][(file + rank) % 2]
                 x0 = self.margin + file * self.square_size
                 y0 = self.margin + rank * self.square_size
                 x1 = x0 + self.square_size
                 y1 = y0 + self.square_size
+                
+                # Draw square with subtle gradient effect
                 cv2.rectangle(img, (x0, y0), (x1, y1), color, -1)
-                # Highlight legal moves
+                
+                # Add subtle inner border for depth
+                inner_color = tuple(int(c * 0.9) for c in color)
+                cv2.rectangle(img, (x0+1, y0+1), (x1-1, y1-1), inner_color, 1)
+                
+                # Highlight legal moves with modern styling
                 if legal_moves and square in legal_moves:
-                    cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 0), 3)
-                # Highlight hover
+                    self.theme.draw_rounded_rectangle(
+                        img, x0+2, y0+2, self.square_size-4, self.square_size-4, 
+                        5, colors['legal_color'], 3
+                    )
+                
+                # Highlight hover with glow effect
                 if hover_square == square:
-                    cv2.rectangle(img, (x0, y0), (x1, y1), (0, 255, 255), 3)
-                # Highlight selected
+                    # Draw glow effect
+                    for i in range(3):
+                        glow_alpha = 0.3 - i * 0.1
+                        glow_color = tuple(int(c * glow_alpha) for c in colors['hover_color'])
+                        cv2.rectangle(img, (x0-i, y0-i), (x1+i, y1+i), glow_color, 1)
+                
+                # Highlight selected with gradient border
                 if selected_square == square:
-                    cv2.rectangle(img, (x0, y0), (x1, y1), (0, 128, 255), 4)
-        # Draw pieces
+                    self.theme.draw_gradient_border(
+                        img, x0, y0, self.square_size, self.square_size, 
+                        4, colors['selected_color']
+                    )
+        
+        # Draw pieces with shadow effects
         for square in chess.SQUARES:
             piece = board.piece_at(square)
             if piece:
@@ -99,8 +123,25 @@ class ChessboardUI:
                     py0 = y - sz // 2
                     px1 = px0 + sz
                     py1 = py0 + sz
+                    
+                    # Draw shadow for piece
+                    shadow_offset = 2
+                    shadow_img = img.copy()
                     piece_img = cv2.resize(img_piece, (sz, sz))
-                    # Overlay with alpha
+                    if piece_img.shape[2] == 4:
+                        alpha = piece_img[:, :, 3] / 255.0
+                        shadow_alpha = alpha * 0.3
+                        for c in range(3):
+                            shadow_img[py0+shadow_offset:py1+shadow_offset, px0+shadow_offset:px1+shadow_offset, c] = (
+                                shadow_alpha * piece_img[:, :, c] * 0.3 + 
+                                (1 - shadow_alpha) * shadow_img[py0+shadow_offset:py1+shadow_offset, px0+shadow_offset:px1+shadow_offset, c]
+                            )
+                    
+                    # Blend shadow back
+                    img = cv2.addWeighted(img, 0.7, shadow_img, 0.3, 0)
+                    
+                    # Draw actual piece
+                    piece_img = cv2.resize(img_piece, (sz, sz))
                     if piece_img.shape[2] == 4:
                         alpha = piece_img[:, :, 3] / 255.0
                         for c in range(3):
