@@ -16,7 +16,7 @@
 ## 🌟 Experience Chess Like Never Before!
 
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZjZGQ0ZjE5ZTJkMmQxNzVlZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="600" alt="Chess Animation">
+<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/chess-demo.gif" width="600" alt="Chess Animation">
 </div>
 
 **AirChess** transforms your webcam into an interactive chessboard where you control pieces using intuitive hand gestures. No mouse, no keyboard - just natural hand movements to play chess against an AI opponent.
@@ -168,7 +168,7 @@ python main.py
 
 ### 🤚 **Gesture Controls**
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmNjQ5ZjY5ZjE5ZTQ5ZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="400" alt="Gesture Controls">
+<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/gesture-demo.gif" width="400" alt="Gesture Controls">
 </div>
 
 <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
@@ -259,7 +259,7 @@ python main.py
 ## 🏗️ Project Architecture
 
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmNjQ5ZjY5ZjE5ZTQ5ZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="600" alt="Architecture">
+<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/architecture-diagram.png" width="600" alt="Architecture">
 </div>
 
 ### 📁 **Core Components**
@@ -311,7 +311,7 @@ python main.py
 ## 🎯 How It Works
 
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmNjQ5ZjY5ZjE5ZTQ5ZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="600" alt="How It Works">
+<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/how-it-works.png" width="600" alt="How It Works">
 </div>
 
 <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
@@ -330,7 +330,7 @@ python main.py
 ## 🤝 Contributing
 
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmNjQ5ZjY5ZjE5ZTQ5ZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="400" alt="Contributing">
+<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/contributing.png" width="400" alt="Contributing">
 </div>
 
 <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
@@ -446,212 +446,9 @@ python main.py
 ---
 
 <div align="center">
-<img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmNjQ5ZjY5ZjE5ZTQ5ZjQ5ZjM0YjNkN2I5ZjJkZjU5ZmE3Mg/giphy.gif" width="600" alt="Thank You">
-
 <h3>🎮 Thank you for trying AirChess! Enjoy playing chess with your hands! 🏰♟️</h3>
 
 <p><em>If you like this project, please give it a ⭐ on GitHub!</em></p>
 </div>
-
-## 🚀 Quick Start
-
-### 📋 Prerequisites
-- Python 3.7 or higher
-- Webcam (built-in or external)
-- Windows, macOS, or Linux
-
-### 🛠️ Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/<your-username>/hand-gesture-chess.git
-   cd hand-gesture-chess
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the game**
-   ```bash
-   python main.py
-   ```
-
-That's it! The game will automatically detect your webcam and start tracking your hand movements.
-
----
-
-## 🎮 Controls & Interface
-
-### 👆 **Gesture Controls**
-| Gesture | Action | Description |
-|---------|--------|-------------|
-| 👌 **Pinch** | Select Piece | Thumb + index finger together |
-| ✋ **Drag** | Move Piece | Maintain pinch while moving |
-| 🖐️ **Release** | Drop Piece | Open fingers to place piece |
-
-### ⌨️ **Keyboard Shortcuts**
-| Key | Function |
-|-----|----------|
-| **T** | Toggle Settings Panel |
-| **G** | Show/Hide Gesture Guide |
-| **↑↓** | Navigate Settings Menu |
-| **Enter** | Select Settings Option |
-| **ESC** | Exit Game |
-
----
-
-## 🎨 Visual Themes
-
-### 🌳 **Classic Wood**
-Traditional chessboard with warm wood tones and classic piece styling
-
-### 💎 **Marble**
-Elegant marble board with high contrast for clarity
-
-### 🌌 **Modern**
-Contemporary design with blue accents and clean aesthetics
-
-### 🌑 **Dark**
-Dark theme optimized for low-light environments
-
----
-
-## 🏗️ Project Architecture
-
-```
-hand-gesture-chess/
-├── 📁 chess_cv/                    # Core application logic
-│   ├── 🎯 app.py                   # Main application and game loop
-│   ├── 🎨 theme.py                 # Visual theme system
-│   ├── ♟️ chessboard.py            # Board rendering and UI
-│   ├── 👋 hand_tracker.py          # MediaPipe hand tracking
-│   ├── 🎭 gesture.py               # Gesture detection logic
-│   ├── 🤖 engine.py                # Chess AI engine
-│   ├── 📊 hud.py                   # Heads-up display overlay
-│   ├── ⚙️ settings.py              # Settings panel interface
-│   ├── 📖 gesture_guide.py         # Interactive help system
-│   ├── ✨ animations.py            # Piece movement animations
-│   ├── 🚨 alerts.py                # Game state notifications
-│   ├── 🏆 captured.py              # Captured pieces display
-│   └── 📁 assets/                  # Piece images and resources
-├── 🚀 main.py                      # Application entry point
-├── 📋 requirements.txt             # Python dependencies
-├── 🤖 hand_landmarker.task         # MediaPipe ML model
-└── 📄 README.md                    # This file
-```
-
----
-
-## 🔧 Technology Stack
-
-| Technology | Purpose |
-|------------|---------|
-| **Python** | Core programming language |
-| **OpenCV** | Computer vision and image processing |
-| **MediaPipe** | Hand gesture detection and tracking |
-| **python-chess** | Chess game logic and rules |
-| **NumPy** | Numerical computations and array operations |
-
----
-
-## 🎯 How It Works
-
-1. **Camera Input** - Webcam captures real-time video
-2. **Hand Detection** - MediaPipe identifies hand landmarks
-3. **Gesture Recognition** - Custom algorithm detects pinch/drag/release
-4. **Coordinate Mapping** - Hand position mapped to chessboard squares
-5. **Game Logic** - Chess engine validates moves and responds
-6. **Visual Feedback** - UI updates with animations and effects
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### 🐛 Bug Reports
-Found a bug? Please open an issue with:
-- Description of the problem
-- Steps to reproduce
-- Your system information
-- Screenshots if applicable
-
----
-
-## 📱 System Requirements
-
-| Component | Minimum | Recommended |
-|-----------|---------|-------------|
-| **Python** | 3.7+ | 3.9+ |
-| **RAM** | 4GB | 8GB |
-| **CPU** | Dual-core | Quad-core |
-| **Camera** | 720p @ 30fps | 1080p @ 60fps |
-| **OS** | Windows 10/macOS 10.14/Ubuntu 18.04 | Latest versions |
-
----
-
-## 🎮 Tips for Best Experience
-
-### ✅ **Optimal Setup**
-- Ensure good lighting for better hand detection
-- Position camera to capture your upper body and hands
-- Wear contrasting colored clothing for better tracking
-- Keep hands within camera frame during gameplay
-
-### 🎯 **Gesture Tips**
-- Make clear, deliberate pinch gestures
-- Maintain steady hand position while dragging
-- Release fingers decisively for accurate piece placement
-- Use your dominant hand for better control
-
----
-
-## 🏆 Developer
-
-<div align="center">
-
-**Created with ❤️ by [tubakhxn](https://github.com/tubakhxn)**
-
-*Pushing the boundaries of human-computer interaction through gesture-based gaming*
-
-</div>
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **MediaPipe Team** - For the amazing hand tracking technology
-- **OpenCV Community** - For computer vision tools and support
-- **python-chess** - For robust chess game logic
-- **Chess Community** - For inspiring innovative gameplay experiences
-
----
-
-<div align="center">
-
-![GitHub stars](https://img.shields.io/github/stars/<your-username>/hand-gesture-chess?style=social)
-![GitHub forks](https://img.shields.io/github/forks/<your-username>/hand-gesture-chess?style=social)
-![GitHub issues](https://img.shields.io/github/issues/<your-username>/hand-gesture-chess)
-![GitHub license](https://img.shields.io/github/license/<your-username>/hand-gesture-chess)
-
-**⭐ Star this repo if you find it interesting!**
-
-</div>
-
----
 
 
