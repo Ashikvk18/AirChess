@@ -16,7 +16,28 @@
 ## 🌟 Experience Chess Like Never Before!
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/chess-demo.gif" width="600" alt="Chess Animation">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; color: white; width: 80%;">
+
+<h3>🎮 Revolutionary Hand Gesture Chess</h3>
+<p><em>Control chess pieces with your hands - no mouse, no keyboard!</em></p>
+
+<div style="margin-top: 20px;">
+<table style="width: 100%; border-collapse: collapse;">
+<tr>
+<td align="center" style="padding: 10px;">
+🤏 **Pinch to Select**
+</td>
+<td align="center" style="padding: 10px;">
+✋ **Drag to Move**
+</td>
+<td align="center" style="padding: 10px;">
+👐 **Release to Drop**
+</td>
+</tr>
+</table>
+</div>
+
+</div>
 </div>
 
 **AirChess** transforms your webcam into an interactive chessboard where you control pieces using intuitive hand gestures. No mouse, no keyboard - just natural hand movements to play chess against an AI opponent.
@@ -168,7 +189,33 @@ python main.py
 
 ### 🤚 **Gesture Controls**
 <div align="center">
-<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/gesture-demo.gif" width="400" alt="Gesture Controls">
+<div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 15px; color: white; width: 80%;">
+
+<h3>🎯 How to Control Pieces</h3>
+
+<div style="margin-top: 15px;">
+<table style="width: 100%; border-collapse: collapse;">
+<tr style="background: rgba(255,255,255,0.2);">
+<td align="center" style="padding: 15px;">
+<div style="font-size: 2em;">🤏</div><br>
+<strong>Pinch</strong><br>
+<small>Thumb + index finger</small>
+</td>
+<td align="center" style="padding: 15px;">
+<div style="font-size: 2em;">✋</div><br>
+<strong>Drag</strong><br>
+<small>Move while pinching</small>
+</td>
+<td align="center" style="padding: 15px;">
+<div style="font-size: 2em;">👐</div><br>
+<strong>Release</strong><br>
+<small>Drop the piece</small>
+</td>
+</tr>
+</table>
+</div>
+
+</div>
 </div>
 
 <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
@@ -259,7 +306,23 @@ python main.py
 ## 🏗️ Project Architecture
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/architecture-diagram.png" width="600" alt="Architecture">
+<div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 25px; border-radius: 20px; color: white; width: 80%;">
+
+<h3>🏗️ System Architecture</h3>
+
+<div style="margin-top: 15px; text-align: left;">
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+<strong>📹 Input Layer:</strong> Webcam → MediaPipe Hand Tracking
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<strong>🎯 Processing Layer:</strong> Gesture Recognition → Chess Logic
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<strong>🎨 Output Layer:</strong> Visual Rendering → UI Updates
+</div>
+</div>
+
+</div>
 </div>
 
 ### 📁 **Core Components**
@@ -311,7 +374,34 @@ python main.py
 ## 🎯 How It Works
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/how-it-works.png" width="600" alt="How It Works">
+<div style="background: linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 100%); padding: 25px; border-radius: 20px; color: white; width: 80%;">
+
+<h3>🔄 Real-Time Processing Pipeline</h3>
+
+<div style="margin-top: 15px; text-align: left;">
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">📹 Step 1: Camera Capture</div>
+Webcam feeds video frames at 60 FPS
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">🤚 Step 2: Hand Detection</div>
+MediaPipe identifies 21 hand landmarks in real-time
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">🎯 Step 3: Gesture Recognition</div>
+Pinch distance and movement analysis
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">♟️ Step 4: Chess Logic</div>
+Valid move verification and game state updates
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">🎨 Step 5: Visual Rendering</div>
+Real-time piece movement and UI updates
+</div>
+</div>
+
+</div>
 </div>
 
 <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
@@ -330,7 +420,34 @@ python main.py
 ## 🤝 Contributing
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/Ashikvk18/AirChess/main/assets/contributing.png" width="400" alt="Contributing">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 20px; color: white; width: 80%;">
+
+<h3>🚀 Join Our Community!</h3>
+
+<div style="margin-top: 15px; text-align: left;">
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">🐛 Report Issues</div>
+Found a bug? Let us know!
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">💡 Suggest Features</div>
+Have an idea? Share it!
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">🎨 Design Themes</div>
+Create beautiful new themes!
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">📝 Improve Docs</div>
+Help us document better!
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
+<div style="font-size: 1.5em; margin-bottom: 10px;">⚡ Optimize Performance</div>
+Make it faster and smoother!
+</div>
+</div>
+
+</div>
 </div>
 
 <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
