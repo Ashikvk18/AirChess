@@ -142,12 +142,12 @@ class HUDOverlay:
         
         # Theme display names
         theme_display_names = {
-            'neon_cyber': '🌟 NEON CYBER',
-            'sunset_vibrant': '🌅 SUNSET VIBRANT',
-            'ocean_breeze': '🌊 OCEAN BREEZE',
-            'forest_emerald': '🌲 FOREST EMERALD',
-            'galaxy_purple': '🌌 GALAXY PURPLE',
-            'fire_opal': '🔥 FIRE OPAL'
+            'classic_wood': '🌳 CLASSIC WOOD',
+            'pure_white': '⚪ PURE WHITE',
+            'high_contrast': '🔲 HIGH CONTRAST',
+            'ocean_blue': '🌊 OCEAN BLUE',
+            'forest_green': '🌲 FOREST GREEN',
+            'royal_purple': '👑 ROYAL PURPLE'
         }
         
         display_name = theme_display_names.get(theme_name, theme_name.upper())

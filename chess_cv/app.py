@@ -162,6 +162,16 @@ def main():
 
         # TURN SAFETY LOCK: ignore all gesture input if not human's turn
         gesture_enabled = human_turn
+        
+        # Calculate legal moves for selected piece
+        if selected_square is not None:
+            piece = get_piece_at_square(selected_square, board)
+            if piece and piece.color == chess.WHITE:
+                legal_moves = [move for move in board.legal_moves if move.from_square == selected_square]
+            else:
+                legal_moves = []
+        else:
+            legal_moves = []
 
         # Pinch START
         if gesture_enabled and pinch_now and not is_pinching:
@@ -239,8 +249,8 @@ def main():
         # 3. Draw board with enhanced shadow and positioning
         chessboard_ui.draw(frame, board, hover_square=hover_square, selected_square=selected_square, legal_moves=legal_moves)
         
-        # Draw enhanced pieces instead of PNG images
-        chessboard_ui.draw_pieces_enhanced(frame, board, hover_square=hover_square, selected_square=selected_square)
+        # Draw real chess pieces instead of letters
+        chessboard_ui.draw_real_pieces(frame, board, hover_square=hover_square, selected_square=selected_square)
 
         # Highlight hovered square (yellow) if not dragging
         if hover_square is not None and not is_pinching:
@@ -252,24 +262,11 @@ def main():
             px = int(drag_pixel_pos[0] * w)
             py = int(drag_pixel_pos[1] * h)
             
-            # Use enhanced piece renderer for dragging piece
-            piece_symbol = chessboard_ui.piece_renderer.piece_symbols.get(dragging_piece.piece_type, '?')
-            piece_color = chessboard_ui.piece_renderer.get_piece_color(dragging_piece)
+            # Use real piece renderer for dragging piece
+            piece_color = chessboard_ui.real_piece_renderer.get_piece_color(dragging_piece)
             
-            # Draw dragging piece with glow effect
-            font_scale = chessboard_ui.piece_renderer.calculate_font_scale(chessboard_ui.square_size * 1.2)
-            thickness = chessboard_ui.piece_renderer.calculate_thickness(chessboard_ui.square_size * 1.2)
-            
-            # Draw glow
-            for i in range(3):
-                glow_alpha = 0.3 - i * 0.1
-                glow_color = tuple(int(c * glow_alpha) for c in piece_color)
-                cv2.putText(frame, piece_symbol, (px, py), cv2.FONT_HERSHEY_COMPLEX, 
-                           font_scale, glow_color, thickness + i * 2, cv2.LINE_AA)
-            
-            # Draw main piece
-            cv2.putText(frame, piece_symbol, (px, py), cv2.FONT_HERSHEY_COMPLEX, 
-                       font_scale, piece_color, thickness, cv2.LINE_AA)
+            # Draw dragging piece with real shape
+            chessboard_ui.real_piece_renderer.draw_real_piece(frame, dragging_piece, px, py)
             # 6. Draw debug red circle at drag_pixel_pos
             cv2.circle(frame, (px, py), 18, (0,0,255), 3)
 

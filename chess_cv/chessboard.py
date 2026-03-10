@@ -8,9 +8,10 @@ import chess
 import os
 from .theme import UITheme, Theme
 from .piece_renderer import PieceRenderer
+from .real_piece_renderer import RealPieceRenderer
 
 class ChessboardUI:
-    def __init__(self, board_size=480, margin=40):
+    def __init__(self, board_size=560, margin=50):
         self.board_size = board_size
         self.margin = margin
         self.square_size = (board_size - 2 * margin) // 8
@@ -19,9 +20,11 @@ class ChessboardUI:
         self.piece_images = self.load_piece_images()
         # Initialize enhanced piece renderer
         self.piece_renderer = PieceRenderer(self)
+        # Initialize real piece renderer for traditional chess pieces
+        self.real_piece_renderer = RealPieceRenderer(self)
         # Board positioning (centered on screen)
-        self.board_x = 240  # Center position on 960px width
-        self.board_y = 120  # Upper position for better visibility
+        self.board_x = 200  # Center position on 960px width
+        self.board_y = 80   # Higher position for better visibility
 
     def set_theme(self, theme_name):
         """Set the visual theme."""
@@ -210,14 +213,12 @@ class ChessboardUI:
             pos = (center[0] - w // 2, center[1] + h // 2)
             cv2.putText(img, symbol, pos, font, font_scale, color, thickness, lineType=cv2.LINE_AA)
 
-    def draw_enhanced_piece(self, img, piece, x, y, is_hovering=False, is_selected=False):
-        """Draw an enhanced chess piece with vibrant colors."""
-        return self.piece_renderer.draw_piece_with_effects(
-            img, piece, x, y, self.square_size, is_hovering, is_selected
-        )
+    def draw_real_piece(self, img, piece, x, y, is_hovering=False, is_selected=False):
+        """Draw a real chess piece shape."""
+        return self.real_piece_renderer.draw_real_piece(img, piece, x, y, self.square_size)
     
-    def draw_pieces_enhanced(self, img, board, hover_square=None, selected_square=None):
-        """Draw all pieces with enhanced rendering."""
+    def draw_real_pieces(self, img, board, hover_square=None, selected_square=None):
+        """Draw all pieces as real chess pieces."""
         for square in chess.SQUARES:
             piece = board.piece_at(square)
             if piece:
@@ -229,7 +230,7 @@ class ChessboardUI:
                 if is_selected and False:  # Add dragging check logic here if needed
                     continue
                     
-                self.draw_enhanced_piece(img, piece, x, y, is_hovering, is_selected)
+                self.draw_real_piece(img, piece, x, y, is_hovering, is_selected)
         
         return img
 

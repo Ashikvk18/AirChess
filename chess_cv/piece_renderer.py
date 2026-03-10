@@ -10,28 +10,29 @@ class PieceRenderer:
     def __init__(self, chessboard_ui):
         self.chessboard_ui = chessboard_ui
         self.theme = UITheme()
+        # Use standard English letters instead of Unicode symbols for better compatibility
         self.piece_symbols = {
-            chess.PAWN: '♟', chess.KNIGHT: '♞', chess.BISHOP: '♝',
-            chess.ROOK: '♜', chess.QUEEN: '♛', chess.KING: '♚'
+            chess.PAWN: 'P', chess.KNIGHT: 'N', chess.BISHOP: 'B',
+            chess.ROOK: 'R', chess.QUEEN: 'Q', chess.KING: 'K'
         }
         
-        # Enhanced color schemes for pieces
+        # Enhanced color schemes for pieces - HIGH CONTRAST for visibility
         self.white_piece_colors = {
-            'neon_cyber': (0, 255, 255),      # Cyan
-            'sunset_vibrant': (255, 255, 255), # White
-            'ocean_breeze': (255, 255, 255),  # White
-            'forest_emerald': (255, 255, 255), # White
-            'galaxy_purple': (255, 255, 255), # White
-            'fire_opal': (255, 255, 255)      # White
+            'classic_wood': (255, 255, 255),      # Pure White
+            'pure_white': (255, 255, 255),         # Pure White
+            'high_contrast': (255, 255, 255),      # Pure White
+            'ocean_blue': (255, 255, 255),         # Pure White
+            'forest_green': (255, 255, 255),       # Pure White
+            'royal_purple': (255, 255, 255)        # Pure White
         }
         
         self.black_piece_colors = {
-            'neon_cyber': (255, 20, 147),     # Hot Pink
-            'sunset_vibrant': (139, 0, 0),    # Dark Red
-            'ocean_breeze': (0, 0, 139),      # Dark Blue
-            'forest_emerald': (0, 100, 0),    # Dark Green
-            'galaxy_purple': (75, 0, 130),    # Indigo
-            'fire_opal': (139, 69, 19)        # Saddle Brown
+            'classic_wood': (0, 0, 0),             # Pure Black
+            'pure_white': (0, 0, 0),               # Pure Black
+            'high_contrast': (0, 0, 0),            # Pure Black
+            'ocean_blue': (0, 0, 0),               # Pure Black
+            'forest_green': (0, 0, 0),             # Pure Black
+            'royal_purple': (0, 0, 0)              # Pure Black
         }
         
         self.piece_shadow_color = (0, 0, 0)
@@ -51,75 +52,60 @@ class PieceRenderer:
         # Determine piece color
         if piece.color == chess.WHITE:
             piece_color = self.white_piece_colors.get(theme_name, (255, 255, 255))
+            # Add white border for extra visibility
+            border_color = (0, 0, 0)
         else:
             piece_color = self.black_piece_colors.get(theme_name, (0, 0, 0))
+            # Add black border for extra visibility
+            border_color = (255, 255, 255)
         
-        # Draw shadow for depth
-        shadow_offset = 3
-        shadow_x = x + shadow_offset
-        shadow_y = y + shadow_offset
-        
-        # Create shadow with transparency
-        shadow_alpha = 0.6
-        shadow_img = np.zeros_like(img)
-        
-        # Draw shadow text
+        # Calculate font settings for maximum visibility
         font_scale = self.calculate_font_scale(size)
         thickness = self.calculate_thickness(size)
         
-        cv2.putText(shadow_img, symbol, (shadow_x, shadow_y), 
-                   cv2.FONT_HERSHEY_COMPLEX, font_scale, 
-                   self.piece_shadow_color, thickness * 2, cv2.LINE_AA)
+        # Draw shadow for depth
+        shadow_offset = 4
+        shadow_x = x + shadow_offset
+        shadow_y = y + shadow_offset
         
-        # Apply shadow with transparency
-        img[y-size//2:y+size//2, x-size//2:x+size//2] = cv2.addWeighted(
-            img[y-size//2:y+size//2, x-size//2:x+size//2], 
-            1.0, shadow_img[y-size//2:y+size//2, x-size//2:x+size//2], 
-            shadow_alpha, 0
-        )
+        # Draw shadow text
+        cv2.putText(img, symbol, (shadow_x, shadow_y), 
+                   cv2.FONT_HERSHEY_SIMPLEX, font_scale, 
+                   (0, 0, 0), thickness + 2, cv2.LINE_AA)
         
-        # Draw glow effect for selected/hovered pieces
-        glow_radius = size // 2 + 5
-        glow_alpha = 0.3
-        
-        # Create glow effect
-        for i in range(3):
-            glow_size = glow_radius - i * 2
-            if glow_size > 0:
-                glow_color = tuple(int(c * glow_alpha * (1 - i/3)) for c in piece_color)
-                cv2.circle(img, (x, y), glow_size, glow_color, 2)
-        
-        # Draw main piece with enhanced rendering
-        # Draw outline first for better contrast
-        outline_color = tuple(max(0, c - 50) for c in piece_color)
+        # Draw border/outline for extra visibility
         cv2.putText(img, symbol, (x, y), 
-                   cv2.FONT_HERSHEY_COMPLEX, font_scale, 
-                   outline_color, thickness + 2, cv2.LINE_AA)
+                   cv2.FONT_HERSHEY_SIMPLEX, font_scale, 
+                   border_color, thickness + 3, cv2.LINE_AA)
         
         # Draw main piece
         cv2.putText(img, symbol, (x, y), 
-                   cv2.FONT_HERSHEY_COMPLEX, font_scale, 
+                   cv2.FONT_HERSHEY_SIMPLEX, font_scale, 
                    piece_color, thickness, cv2.LINE_AA)
         
         # Add inner highlight for depth
-        highlight_color = tuple(min(255, c + 100) for c in piece_color)
+        if piece.color == chess.WHITE:
+            highlight_color = (200, 200, 200)
+        else:
+            highlight_color = (100, 100, 100)
+            
         cv2.putText(img, symbol, (x, y), 
-                   cv2.FONT_HERSHEY_COMPLEX, font_scale, 
+                   cv2.FONT_HERSHEY_SIMPLEX, font_scale, 
                    highlight_color, 1, cv2.LINE_AA)
         
         return img
     
     def calculate_font_scale(self, size):
-        """Calculate appropriate font scale based on piece size."""
-        # Scale font based on square size
-        base_size = 50  # Base size for scaling
-        return max(0.5, min(2.0, size / base_size))
+        """Calculate appropriate font scale based on piece size - MASSIVE for maximum visibility."""
+        # Make pieces HUGE for better visibility
+        base_size = 20  # Even smaller base for much larger scaling
+        return max(2.5, min(5.0, size / base_size))  # MASSIVE scale
     
     def calculate_thickness(self, size):
-        """Calculate appropriate line thickness based on piece size."""
-        # Scale thickness based on square size
-        base_size = 50
-        return max(1, min(4, int(size / base_size * 2)))
+        """Calculate appropriate line thickness based on piece size - VERY THICK for visibility."""
+        # Make lines very thick for better visibility
+        base_size = 20
+        return max(5, min(12, int(size / base_size * 5)))  # VERY THICK
     
     def draw_piece_with_effects(self, img, piece, x, y, size=None, 
                                is_hovering=False, is_selected=False):

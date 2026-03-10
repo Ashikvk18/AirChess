@@ -15,18 +15,18 @@ class SettingsPanel:
         self.selected_option = 0
         self.options = [
             ("Theme", [
-                ("Neon Cyber", "neon_cyber"),
-                ("Sunset Vibrant", "sunset_vibrant"),
-                ("Ocean Breeze", "ocean_breeze"),
-                ("Forest Emerald", "forest_emerald"),
-                ("Galaxy Purple", "galaxy_purple"),
-                ("Fire Opal", "fire_opal")
+                ("Classic Wood", "classic_wood"),
+                ("Pure White", "pure_white"),
+                ("High Contrast", "high_contrast"),
+                ("Ocean Blue", "ocean_blue"),
+                ("Forest Green", "forest_green"),
+                ("Royal Purple", "royal_purple")
             ]),
             ("Animations", ["ON", "OFF"]),
             ("Reset Game", ["CONFIRM", "CANCEL"]),
             "Close Settings"
         ]
-        self.themes = [Theme.NEON_CYBER, Theme.SUNSET_VIBRANT, Theme.OCEAN_BREEZE, Theme.FOREST_EMERALD, Theme.GALAXY_PURPLE, Theme.FIRE_OPAL]
+        self.themes = [Theme.CLASSIC_WOOD, Theme.PURE_WHITE, Theme.HIGH_CONTRAST, Theme.OCEAN_BLUE, Theme.FOREST_GREEN, Theme.ROYAL_PURPLE]
         
     def toggle_visibility(self):
         """Toggle settings panel visibility."""
