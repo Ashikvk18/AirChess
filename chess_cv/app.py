@@ -237,31 +237,10 @@ def main():
         visual_effects.update()
 
         # 3. Draw board with enhanced shadow and positioning
-        chessboard_ui.draw(frame, board)
-
-        # 4. Draw all pieces except selected_square when dragging
-        for square in chess.SQUARES:
-            piece = board.piece_at(square)
-            if piece is not None:
-                if dragging_piece is not None and selected_square == square and is_pinching:
-                    continue
-                img_piece = get_piece_image(piece, chessboard_ui)
-                if img_piece is not None:
-                    x, y = chessboard_ui.get_square_center(square)
-                    sz = chessboard_ui.square_size
-                    px0 = x - sz // 2
-                    py0 = y - sz // 2
-                    px1 = px0 + sz
-                    py1 = py0 + sz
-                    piece_img = cv2.resize(img_piece, (sz, sz))
-                    if piece_img.shape[2] == 4:
-                        alpha = piece_img[:, :, 3] / 255.0
-                        for c in range(3):
-                            frame[py0:py1, px0:px1, c] = (
-                                alpha * piece_img[:, :, c] + (1 - alpha) * frame[py0:py1, px0:px1, c]
-                            )
-                    else:
-                        frame[py0:py1, px0:px1] = piece_img[:, :, :3]
+        chessboard_ui.draw(frame, board, hover_square=hover_square, selected_square=selected_square, legal_moves=legal_moves)
+        
+        # Draw enhanced pieces instead of PNG images
+        chessboard_ui.draw_pieces_enhanced(frame, board, hover_square=hover_square, selected_square=selected_square)
 
         # Highlight hovered square (yellow) if not dragging
         if hover_square is not None and not is_pinching:
@@ -272,7 +251,25 @@ def main():
             # Convert drag_pixel_pos (normalized) to pixel coordinates for drawing
             px = int(drag_pixel_pos[0] * w)
             py = int(drag_pixel_pos[1] * h)
-            draw_piece_at(frame, get_piece_image(dragging_piece, chessboard_ui), px, py, chessboard_ui)
+            
+            # Use enhanced piece renderer for dragging piece
+            piece_symbol = chessboard_ui.piece_renderer.piece_symbols.get(dragging_piece.piece_type, '?')
+            piece_color = chessboard_ui.piece_renderer.get_piece_color(dragging_piece)
+            
+            # Draw dragging piece with glow effect
+            font_scale = chessboard_ui.piece_renderer.calculate_font_scale(chessboard_ui.square_size * 1.2)
+            thickness = chessboard_ui.piece_renderer.calculate_thickness(chessboard_ui.square_size * 1.2)
+            
+            # Draw glow
+            for i in range(3):
+                glow_alpha = 0.3 - i * 0.1
+                glow_color = tuple(int(c * glow_alpha) for c in piece_color)
+                cv2.putText(frame, piece_symbol, (px, py), cv2.FONT_HERSHEY_COMPLEX, 
+                           font_scale, glow_color, thickness + i * 2, cv2.LINE_AA)
+            
+            # Draw main piece
+            cv2.putText(frame, piece_symbol, (px, py), cv2.FONT_HERSHEY_COMPLEX, 
+                       font_scale, piece_color, thickness, cv2.LINE_AA)
             # 6. Draw debug red circle at drag_pixel_pos
             cv2.circle(frame, (px, py), 18, (0,0,255), 3)
 

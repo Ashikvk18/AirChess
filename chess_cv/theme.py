@@ -6,70 +6,100 @@ import cv2
 from enum import Enum
 
 class Theme(Enum):
-    CLASSIC_WOOD = "classic_wood"
-    MARBLE = "marble"
-    MODERN = "modern"
-    DARK = "dark"
+    NEON_CYBER = "neon_cyber"
+    SUNSET_VIBRANT = "sunset_vibrant"
+    OCEAN_BREEZE = "ocean_breeze"
+    FOREST_EMERALD = "forest_emerald"
+    GALAXY_PURPLE = "galaxy_purple"
+    FIRE_OPAL = "fire_opal"
 
 class UITheme:
-    def __init__(self, theme=Theme.CLASSIC_WOOD):
+    def __init__(self, theme=Theme.NEON_CYBER):
         self.current_theme = theme
         self.themes = {
-            Theme.CLASSIC_WOOD: {
-                'board_colors': [(240, 217, 181), (181, 136, 99)],
-                'border_color': (139, 90, 43),
-                'highlight_color': (255, 235, 100),
-                'selected_color': (100, 149, 237),
-                'legal_color': (50, 205, 50),
-                'illegal_color': (220, 20, 60),
-                'hover_color': (255, 215, 0),
-                'check_color': (255, 69, 0),
-                'background': (25, 25, 30),
-                'panel_bg': (40, 40, 45),
-                'text_color': (255, 255, 255),
-                'accent_color': (100, 149, 237)
-            },
-            Theme.MARBLE: {
-                'board_colors': [(248, 248, 255), (47, 79, 79)],
-                'border_color': (105, 105, 105),
-                'highlight_color': (135, 206, 250),
-                'selected_color': (70, 130, 180),
-                'legal_color': (144, 238, 144),
-                'illegal_color': (255, 99, 71),
-                'hover_color': (173, 216, 230),
-                'check_color': (255, 99, 71),
-                'background': (20, 20, 25),
-                'panel_bg': (35, 35, 40),
-                'text_color': (255, 255, 255),
-                'accent_color': (135, 206, 250)
-            },
-            Theme.MODERN: {
-                'board_colors': [(255, 250, 240), (25, 25, 112)],
-                'border_color': (70, 130, 180),
-                'highlight_color': (255, 223, 0),
-                'selected_color': (255, 140, 0),
-                'legal_color': (0, 255, 127),
+            Theme.NEON_CYBER: {
+                'board_colors': [(15, 15, 35), (255, 20, 147)],
+                'border_color': (0, 255, 255),
+                'highlight_color': (255, 255, 0),
+                'selected_color': (0, 255, 127),
+                'legal_color': (255, 105, 180),
                 'illegal_color': (255, 69, 0),
-                'hover_color': (255, 255, 224),
+                'hover_color': (138, 43, 226),
+                'check_color': (255, 0, 255),
+                'background': (5, 5, 15),
+                'panel_bg': (10, 10, 25),
+                'text_color': (0, 255, 255),
+                'accent_color': (0, 255, 255)
+            },
+            Theme.SUNSET_VIBRANT: {
+                'board_colors': [(255, 94, 77), (255, 206, 84)],
+                'border_color': (255, 157, 77),
+                'highlight_color': (255, 255, 255),
+                'selected_color': (255, 0, 128),
+                'legal_color': (128, 255, 0),
+                'illegal_color': (255, 0, 64),
+                'hover_color': (255, 128, 0),
+                'check_color': (255, 0, 255),
+                'background': (25, 25, 35),
+                'panel_bg': (45, 25, 35),
+                'text_color': (255, 255, 255),
+                'accent_color': (255, 94, 77)
+            },
+            Theme.OCEAN_BREEZE: {
+                'board_colors': [(0, 119, 190), (144, 224, 239)],
+                'border_color': (0, 180, 216),
+                'highlight_color': (255, 255, 0),
+                'selected_color': (0, 255, 127),
+                'legal_color': (72, 209, 204),
+                'illegal_color': (255, 99, 71),
+                'hover_color': (64, 224, 208),
                 'check_color': (255, 20, 147),
-                'background': (15, 15, 20),
-                'panel_bg': (25, 25, 35),
+                'background': (10, 20, 30),
+                'panel_bg': (20, 40, 60),
                 'text_color': (255, 255, 255),
                 'accent_color': (0, 191, 255)
             },
-            Theme.DARK: {
-                'board_colors': [(105, 105, 105), (25, 25, 25)],
-                'border_color': (64, 64, 64),
-                'highlight_color': (147, 112, 219),
-                'selected_color': (138, 43, 226),
-                'legal_color': (124, 252, 0),
-                'illegal_color': (255, 64, 64),
-                'hover_color': (189, 183, 107),
-                'check_color': (255, 105, 180),
-                'background': (10, 10, 15),
-                'panel_bg': (20, 20, 25),
+            Theme.FOREST_EMERALD: {
+                'board_colors': [(34, 139, 34), (144, 238, 144)],
+                'border_color': (0, 100, 0),
+                'highlight_color': (255, 215, 0),
+                'selected_color': (50, 205, 50),
+                'legal_color': (0, 255, 127),
+                'illegal_color': (220, 20, 60),
+                'hover_color': (173, 255, 47),
+                'check_color': (255, 69, 0),
+                'background': (15, 25, 15),
+                'panel_bg': (25, 45, 25),
                 'text_color': (255, 255, 255),
-                'accent_color': (147, 112, 219)
+                'accent_color': (50, 205, 50)
+            },
+            Theme.GALAXY_PURPLE: {
+                'board_colors': [(75, 0, 130), (138, 43, 226)],
+                'border_color': (186, 85, 211),
+                'highlight_color': (255, 215, 0),
+                'selected_color': (255, 0, 255),
+                'legal_color': (147, 112, 219),
+                'illegal_color': (255, 0, 128),
+                'hover_color': (218, 112, 214),
+                'check_color': (255, 105, 180),
+                'background': (20, 10, 30),
+                'panel_bg': (40, 20, 60),
+                'text_color': (255, 255, 255),
+                'accent_color': (186, 85, 211)
+            },
+            Theme.FIRE_OPAL: {
+                'board_colors': [(255, 69, 0), (255, 140, 0)],
+                'border_color': (255, 165, 0),
+                'highlight_color': (255, 255, 0),
+                'selected_color': (255, 20, 147),
+                'legal_color': (255, 215, 0),
+                'illegal_color': (139, 0, 0),
+                'hover_color': (255, 99, 71),
+                'check_color': (255, 0, 0),
+                'background': (30, 15, 10),
+                'panel_bg': (50, 25, 20),
+                'text_color': (255, 255, 255),
+                'accent_color': (255, 140, 0)
             }
         }
     

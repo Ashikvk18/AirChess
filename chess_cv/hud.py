@@ -136,6 +136,32 @@ class HUDOverlay:
         
         return img
     
+    def draw_theme_indicator(self, img, theme_name):
+        """Draw current theme indicator with enhanced styling."""
+        colors = self.theme.get_colors()
+        
+        # Theme display names
+        theme_display_names = {
+            'neon_cyber': '🌟 NEON CYBER',
+            'sunset_vibrant': '🌅 SUNSET VIBRANT',
+            'ocean_breeze': '🌊 OCEAN BREEZE',
+            'forest_emerald': '🌲 FOREST EMERALD',
+            'galaxy_purple': '🌌 GALAXY PURPLE',
+            'fire_opal': '🔥 FIRE OPAL'
+        }
+        
+        display_name = theme_display_names.get(theme_name, theme_name.upper())
+        
+        # Panel dimensions
+        panel_w, panel_h = 180, 50
+        panel_x = 30
+        panel_y = self.height - panel_h - 30
+        
+        # Draw panel
+        img = self.theme.draw_panel(img, panel_x, panel_y, panel_w, panel_h, "THEME", display_name)
+        
+        return img
+    
     def draw_fps_counter(self, img, fps):
         """Draw FPS counter."""
         colors = self.theme.get_colors()
